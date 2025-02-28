@@ -24,6 +24,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   String _operator = '';
   double? _firstOperand;
   double? _secondOperand;
+  bool _decimalAdded = false;
 
   void _onButtonPressed(String value) {
     setState(() {
@@ -32,11 +33,18 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         _operator = '';
         _firstOperand = null;
         _secondOperand = null;
+        _decimalAdded = false;
+      } else if (value == '.') {
+        if (!_decimalAdded && (!_display.contains('.') || _operator.isNotEmpty)) {
+          _display += value;
+          _decimalAdded = true;
+        }
       } else if (value == '+' || value == '-' || value == '*' || value == '/') {
         if (_display.isNotEmpty) {
           _firstOperand = double.tryParse(_display);
           _operator = value;
           _display = '';
+          _decimalAdded = false;
         }
       } else if (value == '=') {
         if (_firstOperand != null && _operator.isNotEmpty && _display.isNotEmpty) {
@@ -59,6 +67,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             _firstOperand = null;
             _operator = '';
             _secondOperand = null;
+            _decimalAdded = _display.contains('.');
           }
         }
       } else {
@@ -97,7 +106,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               ['7', '8', '9', '/'],
               ['4', '5', '6', '*'],
               ['1', '2', '3', '-'],
-              ['C', '0', '=', '+'],
+              ['C', '0', '.', '='],
+              ['+']
             ].map((row) {
               return Row(
                 children: row.map((text) => _buildButton(text)).toList(),
@@ -109,4 +119,3 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     );
   }
 }
-
